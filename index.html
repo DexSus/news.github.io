@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <title>Прямі ефіри новин</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
+      padding: 16px;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 1400px;
+      background: #020617;
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #1f2937;
+    }
+
+    header h1 {
+      font-size: 1.4rem;
+      font-weight: 600;
+    }
+
+    header .subtitle {
+      font-size: 0.8rem;
+      color: #9ca3af;
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .panel {
+      background: #020617;
+      border-radius: 12px;
+      border: 1px solid #1f2937;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 0;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .panel-title {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .tag {
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid #4b5563;
+      color: #9ca3af;
+    }
+
+    .player-wrapper {
+      margin-top: 6px;
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%; /* 16:9 */
+      border-radius: 10px;
+      overflow: hidden;
+      background: #020617;
+      border: 1px solid #1f2937;
+    }
+
+    iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .note {
+      margin-top: 6px;
+      font-size: 0.75rem;
+      color: #9ca3af;
+    }
+
+    .open-link-btn {
+      margin-top: 6px;
+      font-size: 0.8rem;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid #4b5563;
+      background: #020617;
+      color: #e5e7eb;
+      cursor: pointer;
+      transition: 0.15s ease;
+    }
+
+    .open-link-btn:hover {
+      background: #111827;
+    }
+
+    .channels {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+
+    .channels button {
+      font-size: 0.8rem;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid #374151;
+      background: #020617;
+      color: #e5e7eb;
+      cursor: pointer;
+      transition: 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .channels button:hover {
+      background: #111827;
+    }
+
+    .channels button.active {
+      background: #2563eb;
+      border-color: #2563eb;
+      color: #f9fafb;
+    }
+
+    @media (max-width: 900px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div>
+        <h1>Онлайн-панель прямих ефірів новин</h1>
+        <div class="subtitle">Зліва — Україна (YouTube), справа — РФ (інший сайт)</div>
+      </div>
+    </header>
+
+    <main>
+      <!-- УКРАЇНСЬКІ НОВИНИ -->
+      <section class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Українські новини (YouTube)</div>
+          <span class="tag">Live YouTube</span>
+        </div>
+
+        <div class="player-wrapper">
+          <!-- ТВОЄ ВБУДОВУВАННЯ (варіант через youtube-nocookie) -->
+          <iframe width="1236" height="695" src="https://www.youtube.com/embed/v_hgVy3tUZM" title="🛑  Телемарафон Єдині новини: онлайн / Телемарафон live / Факти ICTV онлайн / Вторгнення РФ в Україну" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+
+        <p class="note">
+          Якщо хочеш інший ефір — просто заміни <code>src="..."</code> на новий код з YouTube (кнопка “Поділитися → Вбудувати”).
+        </p>
+      </section>
+
+      <!-- РФ НОВИНИ -->
+      <section class="panel" id="rf-panel">
+        <div class="panel-header">
+          <div class="panel-title">Новини РФ (інший сайт)</div>
+          <span class="tag">External site</span>
+        </div>
+
+        <div class="channels" id="rf-channels"></div>
+
+        <div class="player-wrapper">
+          <iframe
+            id="rf-frame"
+            src=""
+            title="РФ новини live"
+          ></iframe>
+        </div>
+
+        <button class="open-link-btn" id="rf-open-tab" type="button">
+          Відкрити поточний стрім у новій вкладці
+        </button>
+
+        <p class="note">
+          Якщо якийсь сайт не показується всередині (порожньо / помилка), він може блокувати вбудовування в iframe.
+          Тоді користуйся кнопкою “Відкрити в новій вкладці”.
+        </p>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // Тимчасові фейкові посилання для РФ — заміниш своїми
+    const rfChannels = [
+      {
+        name: "RF Новини 1",
+        url: "https://example.com/rf-news-stream-1"
+      },
+      {
+        name: "RF Новини 2",
+        url: "https://example.com/rf-news-stream-2"
+      }
+    ];
+
+    const rfChannelsContainer = document.getElementById("rf-channels");
+    const rfFrame = document.getElementById("rf-frame");
+    const rfOpenTabBtn = document.getElementById("rf-open-tab");
+
+    let currentRfUrl = "";
+
+    function renderChannels(channels, container, onClick) {
+      container.innerHTML = "";
+      channels.forEach((ch, index) => {
+        const btn = document.createElement("button");
+        btn.textContent = ch.name;
+        btn.addEventListener("click", () => onClick(ch, btn));
+        if (index === 0) {
+          btn.classList.add("active");
+        }
+        container.appendChild(btn);
+      });
+    }
+
+    function setActiveButton(container, activeBtn) {
+      Array.from(container.querySelectorAll("button")).forEach((btn) => {
+        btn.classList.toggle("active", btn === activeBtn);
+      });
+    }
+
+    // Ініціалізація РФ каналів
+    renderChannels(rfChannels, rfChannelsContainer, (channel, btn) => {
+      currentRfUrl = channel.url;
+      rfFrame.src = channel.url;
+      setActiveButton(rfChannelsContainer, btn);
+    });
+
+    if (rfChannels.length > 0) {
+      currentRfUrl = rfChannels[0].url;
+      rfFrame.src = rfChannels[0].url;
+    }
+
+    rfOpenTabBtn.addEventListener("click", () => {
+      if (currentRfUrl) {
+        window.open(currentRfUrl, "_blank");
+      } else {
+        alert("Спочатку вибери канал РФ.");
+      }
+    });
+  </script>
+</body>
+</html>
