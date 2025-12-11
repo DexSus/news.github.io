@@ -187,12 +187,17 @@
         </div>
 
         <div class="player-wrapper">
-          <!-- ТВОЄ ВБУДОВУВАННЯ (варіант через youtube-nocookie) -->
-          <iframe width="1236" height="695" src="https://www.youtube.com/embed/v_hgVy3tUZM" title="🛑  Телемарафон Єдині новини: онлайн / Телемарафон live / Факти ICTV онлайн / Вторгнення РФ в Україну" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+          <iframe
+            src="https://www.youtube.com/embed/v_hgVy3tUZM"
+            title="Телемарафон Єдині новини"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+          ></iframe>
         </div>
 
         <p class="note">
-          Якщо хочеш інший ефір — просто заміни <code>src="..."</code> на новий код з YouTube (кнопка “Поділитися → Вбудувати”).
+          Щоб змінити ефір — просто заміни <code>src="..."</code> на новий embed-код із YouTube.
         </p>
       </section>
 
@@ -218,43 +223,57 @@
         </button>
 
         <p class="note">
-          Якщо якийсь сайт не показується всередині (порожньо / помилка), він може блокувати вбудовування в iframe.
+          Якщо якийсь сайт не показується (порожньо / помилка), він може блокувати вбудовування в iframe.
           Тоді користуйся кнопкою “Відкрити в новій вкладці”.
+          Авто-оновлення правого плеєра відбувається раз на кілька хвилин, щоб розвісити “зависання”.
         </p>
       </section>
     </main>
   </div>
 
   <script>
-    // Тимчасові фейкові посилання для РФ — заміниш своїми
+    // ================================
+    // НАЛАШТУВАННЯ РФ-КАНАЛІВ
+    // ================================
+    // СЮДИ ВПИСУЄШ РЕАЛЬНІ URL СТОРІНОК ЗІ СТРІМАМИ
     const rfChannels = [
       {
         name: "RF Новини 1",
-        url: "https://example.com/rf-news-stream-1"
+        url: "https://smotrim.ru/channel/3"
       },
       {
         name: "RF Новини 2",
-        url: "https://example.com/rf-news-stream-2"
+        url: "https://www.ontvtime.ru/live/russia24.html"
       }
+      // додавай ще об'єкти за потреби
     ];
+
+    // Як часто перезавантажувати правий iframe (у хвилинах)
+    const REFRESH_INTERVAL_MINUTES = 10;
+    const REFRESH_INTERVAL_MS = REFRESH_INTERVAL_MINUTES * 60 * 1000;
 
     const rfChannelsContainer = document.getElementById("rf-channels");
     const rfFrame = document.getElementById("rf-frame");
     const rfOpenTabBtn = document.getElementById("rf-open-tab");
 
     let currentRfUrl = "";
+    let refreshTimer = null;
 
     function renderChannels(channels, container, onClick) {
       container.innerHTML = "";
-      channels.forEach((ch, index) => {
+      channels.forEach((ch) => {
         const btn = document.createElement("button");
         btn.textContent = ch.name;
         btn.addEventListener("click", () => onClick(ch, btn));
-        if (index === 0) {
-          btn.classList.add("active");
-        }
         container.appendChild(btn);
       });
+
+      // авто-вибір першого каналу
+      const firstBtn = container.querySelector("button");
+      if (firstBtn && channels[0]) {
+        firstBtn.classList.add("active");
+        onClick(channels[0], firstBtn);
+      }
     }
 
     function setActiveButton(container, activeBtn) {
@@ -263,18 +282,29 @@
       });
     }
 
-    // Ініціалізація РФ каналів
-    renderChannels(rfChannels, rfChannelsContainer, (channel, btn) => {
-      currentRfUrl = channel.url;
-      rfFrame.src = channel.url;
-      setActiveButton(rfChannelsContainer, btn);
-    });
+    function startAutoRefresh() {
+      if (refreshTimer) clearInterval(refreshTimer);
+      if (!currentRfUrl) return;
 
-    if (rfChannels.length > 0) {
-      currentRfUrl = rfChannels[0].url;
-      rfFrame.src = rfChannels[0].url;
+      refreshTimer = setInterval(() => {
+        // просте перевантаження iframe
+        rfFrame.src = currentRfUrl;
+      }, REFRESH_INTERVAL_MS);
     }
 
+    function handleChannelClick(channel, btn) {
+      currentRfUrl = channel.url;
+      rfFrame.src = currentRfUrl;
+      setActiveButton(rfChannelsContainer, btn);
+      startAutoRefresh();
+    }
+
+    // ініціалізація списку РФ-каналів
+    if (rfChannels.length > 0) {
+      renderChannels(rfChannels, rfChannelsContainer, handleChannelClick);
+    }
+
+    // кнопка "відкрити в новій вкладці"
     rfOpenTabBtn.addEventListener("click", () => {
       if (currentRfUrl) {
         window.open(currentRfUrl, "_blank");
