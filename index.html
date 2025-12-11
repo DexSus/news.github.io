@@ -174,7 +174,7 @@
     <header>
       <div>
         <h1>Онлайн-панель прямих ефірів новин</h1>
-        <div class="subtitle">Зліва — Україна (YouTube), справа — РФ (інший сайт)</div>
+        <div class="subtitle">Зліва — Україна (YouTube), справа — рф (інший сайт)</div>
       </div>
     </header>
 
@@ -201,10 +201,10 @@
         </p>
       </section>
 
-      <!-- РФ НОВИНИ -->
+      <!-- рф НОВИНИ -->
       <section class="panel" id="rf-panel">
         <div class="panel-header">
-          <div class="panel-title">Новини РФ (інший сайт)</div>
+          <div class="panel-title">Новини рф (інший сайт)</div>
           <span class="tag">External site</span>
         </div>
 
@@ -214,7 +214,7 @@
           <iframe
             id="rf-frame"
             src=""
-            title="РФ новини live"
+            title="рф новини live"
           ></iframe>
         </div>
 
@@ -233,7 +233,7 @@
 
   <script>
     // ================================
-    // НАЛАШТУВАННЯ РФ-КАНАЛІВ
+    // НАЛАШТУВАННЯ рф-КАНАЛІВ
     // ================================
     // СЮДИ ВПИСУЄШ РЕАЛЬНІ URL СТОРІНОК ЗІ СТРІМАМИ
     const rfChannels = [
@@ -299,7 +299,7 @@
       startAutoRefresh();
     }
 
-    // ініціалізація списку РФ-каналів
+    // ініціалізація списку рф-каналів
     if (rfChannels.length > 0) {
       renderChannels(rfChannels, rfChannelsContainer, handleChannelClick);
     }
@@ -309,10 +309,11 @@
       if (currentRfUrl) {
         window.open(currentRfUrl, "_blank");
       } else {
-        alert("Спочатку вибери канал РФ.");
+        alert("Спочатку вибери канал рф.");
       }
     });
   </script>
 </body>
 </html>
+
 
